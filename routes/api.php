@@ -13,6 +13,39 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});*/
+
+
+Route::group(['prefix' => '1.0'], function () {
+    /**
+     * Rutas para tren
+     */
+    Route::group(['prefix' => 'train'],function(){
+        Route::resource('zones', 'AvailableZoneController',[
+            'index'
+        ]);
+        Route::resource('search', 'AvailableTrips',[
+            'index', 'show'
+        ]);
+        Route::resource('reservations', 'ReservationsController',[
+            'store', 'show'
+        ]);
+    });
+
+    /**
+     * Rutas para  hotel
+     */
+    Route::group(['prefix' => 'hotel'],function(){
+        Route::resource('zones', 'HotelZone',[
+            'index'
+        ]);
+        Route::resource('search', 'HotelSearch',[
+            'index', 'show'
+        ]);
+        Route::resource('reservations', 'HotelReservation',[
+            'store', 'show'
+        ]);
+    });
 });

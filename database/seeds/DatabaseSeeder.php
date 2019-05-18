@@ -45,8 +45,8 @@ class DatabaseSeeder extends Seeder
             DB::table('available_trips')->insert([
                 'origin_available_zone_id' => $faker->numberBetween(1,10),
                 'destination_available_zone_id' => $faker->numberBetween(1,10),
-                'inbound_date' => $faker->dateTimeBetween($startDate = 'now', $endDate = '+1 years', $timezone = null),
-                'outbound_date' => $faker->dateTimeBetween($startDate ='+1 days', $endDate = '+1 years', $timezone = null),
+                'inbound_date' => $faker->dateTimeBetween($startDate = '+1 hours', $endDate = '+4 hours', $timezone = null),
+                'outbound_date' => $faker->dateTimeBetween($startDate ='+8 hours', $endDate = '+14 hours', $timezone = null),
                 'max_group' => $faker->numberBetween(20,100),
                 'price_standar' => $faker->randomFloat(2,100,1000),
                 'price_premier' =>  $faker->randomFloat(2,150,2000),
@@ -66,8 +66,49 @@ class DatabaseSeeder extends Seeder
                 'contact_last_name' => $faker->lastName,
                 'contact_email' => $faker->email,
                 'contact_phone' => $faker->phoneNumber,
+                'type_reservations' => ($i < 3) ? 'standar' : 'premier'
             ]);
         }
+
+        /* Train SEED* */
+
+        for ($i = 0; $i < 20; $i++) {
+            DB::table('hotel_countries')->insert([
+                'code' => ($i < 10) ? 'ES' :$faker->countryCode,
+                'currency' => ($i < 10) ? 'EUR' :$faker->currencyCode,
+                'contry_name' => ($i < 10) ? 'Spain' : $faker->country,
+                'language' => ($i < 10) ? 'es' : $faker->languageCode
+            ]);
+
+        }
+
+        for ($i = 0; $i < 20; $i++) {
+            DB::table('hotel_availables')->insert([
+                'name' => $faker->sentence(3),
+                'stars' => $faker->numberBetween(1,5),
+                'description' => $faker->sentence(8),
+                'amount' => $faker->randomFloat(2,10,100),
+                'hotel_country_id' => $faker->numberBetween(1,8)
+            ]);
+
+        }
+
+
+        for ($i = 0; $i < 10; $i++) {
+            DB::table('hotel_reservations')->insert([
+                'first_name' => $faker->firstName,
+                'last_name' => $faker->lastName,
+                'email' => $faker->email,
+                'phone' => $faker->phoneNumber,
+                'hotel_available' => $faker->numberBetween(1,8),
+                'date_start' => $faker->dateTimeBetween($startDate = '+1 day', $endDate = '+2 days', $timezone = null),
+                'date_finish' => $faker->dateTimeBetween($startDate = '+1 day', $endDate = '+2 days', $timezone = null),
+                'type_reservations' => ($i < 3) ? 'standar' : 'premier'
+            ]);
+
+        }
+
+        
     }
 
 }
