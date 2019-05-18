@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\availableTrip;
+use App\social_networks;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use DB;
 
-class AvailableTrips extends Controller
+class SocialNetworkController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,100 +15,11 @@ class AvailableTrips extends Controller
     public function index(Request $request)
     {
         try {
-            /**
-             * Este controlador deberia ser capaz de realacionar otras rutas para posteriormente
-             * mostrar conexion de viajes, por ahora solo mostrara resultados en los cuales son directos 
-             * todos
-             *  */
-            $origin_available_zone_id = $request->origin_available_zone_id;
-            $destination_available_zone_id = $request->destination_available_zone_id;
-            $inbound_date = $request->inbound_date;
-            $outbound_date = $request->outbound_date;
-            
 
             $limit = ($request->limit) ? $request->limit : 15;
-            
-            if(!$origin_available_zone_id){
-               return response()->json([
-                'msg' => 'Origen not valido'
-               ],404); 
-            }
 
-            if(!$destination_available_zone_id){
-                return response()->json([
-                 'msg' => 'Destino not valido'
-                ],404); 
-             }
-             
-             if(!$inbound_date){
-                return response()->json([
-                 'msg' => 'Fecha inicio not valido'
-                ],404); 
-             }
-             
-
-             if(!$outbound_date){
-                return response()->json([
-                 'msg' => 'Fecha final not valido'
-                ],404); 
-             }
-             
-            $now = Carbon::now()->toDateTimeString();
-            $inbound_date = Carbon::parse($inbound_date)->toDateTimeString();
-            $outbound_date = Carbon::parse($outbound_date)->toDateTimeString();
-
-            /**
-             * Tomamos el numero de resultados default 15 o los que se indiquen en el parametro limit
-             * Se deberia devolver la divisa de acuerdo al pais y obtener la divisa de donde se esta solicitando
-             *  */
-
-            $go_data = availableTrip::orderBy('available_trips.id', 'DESC')
-                ->where('available_trips.origin_available_zone_id',$origin_available_zone_id)
-                ->where('available_trips.destination_available_zone_id',$destination_available_zone_id)
-                ->where('available_trips.inbound_date','>=',$inbound_date)
-                ->where('available_trips.outbound_date','<=',$outbound_date)
-                ->select('available_trips.*')
-                ->take($limit)
-                ->get();
-
-            $go_data->map(function ($item) {
-                $_start = Carbon::parse($item->inbound_date);
-                $_finish = Carbon::parse($item->outbound_date);
-                $item->diffTime = [
-                    'hours' => $_start->diff($_finish)->format('%H'),
-                    'minutes' => $_start->diff($_finish)->format('%I')
-                ];
-                return $item;
-            });
-
-
-            /**
-             * Estas dos consultas se deberian realizar en una sola o tener un metodo mas optimo basado para  evitar
-             * en lo posible recorridos y llamadas a la bd incesarias
-             */
-
-            $back_data = availableTrip::orderBy('available_trips.id', 'DESC')
-            ->where('available_trips.origin_available_zone_id',$destination_available_zone_id)
-            ->where('available_trips.destination_available_zone_id',$origin_available_zone_id)
-            ->where('available_trips.inbound_date','>=',$outbound_date)
-            ->select('available_trips.*')
-            ->take($limit)
-            ->get();
-
-            $back_data->map(function ($item) {
-                $_start = Carbon::parse($item->inbound_date);
-                $_finish = Carbon::parse($item->outbound_date);
-                $item->diffTime = [
-                    'hours' => $_start->diff($_finish)->format('%H'),
-                    'minutes' => $_start->diff($_finish)->format('%I')
-                ];
-                return $item;
-            });
-                    
-            $data = [
-                'go_way' => $go_data,
-                'back_way' => $back_data
-            ];
+            $data = social_networks::orderBy('id', 'DESC')
+                ->paginate($limit);
 
             $response = array(
                 'status' => 'success',
@@ -156,8 +65,8 @@ class AvailableTrips extends Controller
         }
         try {
 
-            $data = availableTrip::insertGetId($fields);
-            $data = availableTrip::find($data);
+            $data = social_networks::insertGetId($fields);
+            $data = social_networks::find($data);
 
             $response = array(
                 'status' => 'success',
@@ -187,7 +96,7 @@ class AvailableTrips extends Controller
     {
         try {
 
-            $data = availableTrip::find($id);
+            $data = social_networks::find($id);
             $response = array(
                 'status' => 'success',
                 'data' => $data,
@@ -237,10 +146,10 @@ class AvailableTrips extends Controller
                 };
             }
 
-            availableTrip::where('id', $id)
+            social_networks::where('id', $id)
                 ->update($fields);
 
-            $data = availableTrip::find($id);
+            $data = social_networks::find($id);
 
 
             $response = array(
@@ -276,7 +185,7 @@ class AvailableTrips extends Controller
 
         try {
 
-            availableTrip::where('id', $id)
+            social_networks::where('id', $id)
                 ->delete();
 
             $response = array(

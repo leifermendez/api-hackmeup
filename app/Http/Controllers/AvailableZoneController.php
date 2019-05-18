@@ -15,6 +15,12 @@ class AvailableZoneController extends Controller
     public function index(Request $request)
     {
         try {
+            /**
+             * Se deberia tener un status de la estacion de el funcionamiento de la estacion de tren
+             * Puede ser "available" o "unavailable" para de esta forma evitar mostras resultados de estaciones de tren
+             * que se encuentren cerradas o en mantenimiento
+             */
+            
             $limit = ($request->limit) ? $request->limit : 15;
 
             $data = availableZone::orderBy('available_zones.id', 'DESC')

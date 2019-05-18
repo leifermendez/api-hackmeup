@@ -23,14 +23,19 @@ Route::group(['prefix' => '1.0'], function () {
      * Rutas para tren
      */
     Route::group(['prefix' => 'train'],function(){
-        Route::resource('zones', 'AvailableZoneController',[
+        Route::resource('zones', 'AvailableZoneController')
+        ->only([
             'index'
         ]);
-        Route::resource('search', 'AvailableTrips',[
-            'index', 'show'
+
+        Route::resource('search', 'AvailableTrips')
+        ->only([
+            'index'
         ]);
-        Route::resource('reservations', 'ReservationsController',[
-            'store', 'show'
+
+        Route::resource('reservations', 'ReservationsController')
+        ->only([
+            'show','store'
         ]);
     });
 
@@ -38,14 +43,29 @@ Route::group(['prefix' => '1.0'], function () {
      * Rutas para  hotel
      */
     Route::group(['prefix' => 'hotel'],function(){
-        Route::resource('zones', 'HotelZone',[
+        Route::resource('zones', 'HotelZone')
+        ->only([
             'index'
         ]);
-        Route::resource('search', 'HotelSearch',[
-            'index', 'show'
+        
+        Route::resource('search', 'HotelSearch')
+        ->only([
+            'show','index'
         ]);
-        Route::resource('reservations', 'HotelReservation',[
-            'store', 'show'
+        
+        Route::resource('reservations', 'HotelReservation')
+        ->only([
+            'show','store'
         ]);
     });
+
+    /**
+     * Ruta redes sociales
+     */
+
+    Route::resource('social-network', 'SocialNetworkController')
+    ->only([
+        'show','index','update','store'
+    ]);
+    
 });

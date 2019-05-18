@@ -35,6 +35,12 @@ class ReservationsController extends Controller
      */
     public function store(Request $request)
     {
+
+        /**
+         * Deberiamos validar mas a fondo los datos que se ingresan como si el email realmente es un mail y el telefono.
+         * Tambien disparar un email para que el cliente tenga un feedback y de reservacion
+         */
+
         $fields = array();
         foreach ($request->all() as $key => $value) {
             $fields[$key] = $value;
@@ -71,6 +77,12 @@ class ReservationsController extends Controller
     public function show(Request $request, $id)
     {
         try {
+
+            /**
+             * Deberiamos limitar por tiempo o numero de peticiones, o un captacha para evitar llamadas de robot o consumo
+             * excesivo de las peticiones
+             */
+            
             $limit = ($request->limit) ? $request->limit : 15;
             $last_name = $request->last_name;
 
