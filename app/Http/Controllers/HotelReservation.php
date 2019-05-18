@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\hotelReservations;
 use Illuminate\Http\Request;
+use App\Notifications\Reservation;
 
 class HotelReservation extends Controller
 {
@@ -43,7 +44,7 @@ class HotelReservation extends Controller
 
             $data = hotelReservations::insertGetId($fields);
             $data = hotelReservations::find($data);
-
+            $data->notify(new Reservation($data));
             $response = array(
                 'status' => 'success',
                 'msg' => 'Insertado',
